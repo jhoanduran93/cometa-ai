@@ -1,5 +1,6 @@
 'use client';
-
+import axios from 'axios';
+import React, { useState } from 'react';
 // Chakra imports
 import {
   Box,
@@ -15,13 +16,14 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import illustration from '/public/img/auth/auth.jpg';
+import illustration from '/public/img/auth/auth2.jpg';
 import { HSeparator } from '@/components/separator/Separator';
 import DefaultAuth from '@/components/auth';
-import React from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 import { RiEyeCloseLine } from 'react-icons/ri';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 function SignUp() {
   // Chakra color mode
@@ -35,8 +37,51 @@ function SignUp() {
     { color: 'gray.500', fontWeight: '500' },
     { color: 'whiteAlpha.600', fontWeight: '500' },
   );
-  const [show, setShow] = React.useState(false);
+  const [show, setShow] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value);
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
+  const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value);
+
   const handleClick = () => setShow(!show);
+  const router = useRouter();
+  let redirectTologin = false;
+
+  const createUser = async () => {
+    try {
+      const response = await axios.post('https://cometa-c40d5067bfcf.herokuapp.com/create_user', {
+        name,
+        email,
+        password,
+      });
+
+      if (response.status === 201) {
+        console.log('Usuario creado exitosamente:', response.data);
+        // Puedes redirigir al usuario a la página de inicio de sesión o realizar alguna otra acción
+       
+      } else {
+        console.error('Error al crear usuario:', response.data);
+      }
+    } catch (error) {
+      console.error('Error al crear usuario:', (error as Error).message);
+    }finally {
+      
+        console.log("Antes de redirección");
+        router.push('/others/sign-in');
+      
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await createUser();
+  };
+  
   return (
     <DefaultAuth illustrationBackground={illustration?.src}>
       <Flex
@@ -107,7 +152,7 @@ function SignUp() {
             </Text>
             <HSeparator />
           </Flex>
-          <FormControl>
+          <FormControl as="form" onSubmit={handleSubmit}>
             <FormLabel
               cursor="pointer"
               htmlFor="name"
@@ -125,7 +170,7 @@ function SignUp() {
               variant="auth"
               id="name"
               fontSize="sm"
-              type="email"
+              type={show ? 'text' : 'name'}
               placeholder="Enter your name"
               mb="24px"
               size="lg"
@@ -133,6 +178,8 @@ function SignUp() {
               h="54px"
               _placeholder={{ placeholderColor }}
               fontWeight="500"
+              value={name}
+              onChange={handleNameChange}
             />
             <FormLabel
               cursor="pointer"
@@ -159,6 +206,8 @@ function SignUp() {
               _placeholder={{ placeholderColor }}
               h="54px"
               fontWeight="500"
+              value={email}
+              onChange={handleEmailChange}
             />
             {/* PASSWORD */}
             <FormLabel
@@ -186,6 +235,8 @@ function SignUp() {
                 fontWeight="500"
                 _placeholder={{ placeholderColor }}
                 type={show ? 'text' : 'password'}
+                value={password}
+                onChange={handlePasswordChange}
               />
               <InputRightElement display="flex" alignItems="center" mt="4px">
                 <Icon
@@ -223,6 +274,8 @@ function SignUp() {
                 fontWeight="500"
                 _placeholder={{ placeholderColor }}
                 type={show ? 'text' : 'password'}
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChange}
               />
               <InputRightElement display="flex" alignItems="center" mt="4px">
                 <Icon
@@ -234,6 +287,7 @@ function SignUp() {
               </InputRightElement>
             </InputGroup>
             <Button
+              type="submit"
               variant="primary"
               py="20px"
               px="16px"

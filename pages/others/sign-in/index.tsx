@@ -16,14 +16,18 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import illustration from '/public/img/auth/auth.jpg';
+import illustration from '/public/img/auth/auth2.jpg';
 import { HSeparator } from '@/components/separator/Separator';
 import DefaultAuth from '@/components/auth';
-import React from 'react';
+//import React from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 import { RiEyeCloseLine } from 'react-icons/ri';
 import NavLink from '@/components/link/NavLink';
+import axios from 'axios';
+import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+
 
 function SignUp() {
   // Chakra color mode
@@ -37,8 +41,89 @@ function SignUp() {
     { color: 'gray.500', fontWeight: '500' },
     { color: 'whiteAlpha.600', fontWeight: '500' },
   );
-  const [show, setShow] = React.useState(false);
+  const [show, setShow] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [keepLoggedIn, setKeepLoggedIn] = useState(false);
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
+
+  const router = useRouter();
+  let redirectToChat = false;
+
+
+  const loginUser = async () => {
+    try {
+      console.log('Antes de la solicitud');
+      const response = await axios.post('https://cometa-c40d5067bfcf.herokuapp.com/login', {
+        email: email,
+        password: password,
+        keepLoggedIn: keepLoggedIn,
+      });
+  
+      console.log('Después de la solicitud, antes de verificar el código de estado');
+      // Verificar el código de estado de la respuesta
+      if (response.status === 200) {
+        redirectToChat = true;
+        // El inicio de sesión fue exitoso
+        console.log('Inicio de sesión exitoso:', response.data);
+      } else {
+        // El servidor respondió, pero no fue un inicio de sesión exitoso
+        console.error('Error en el inicio de sesión:', response.data);
+        
+        // Establecer los errores en true para mostrar mensajes de error en el formulario
+        setEmailError(true);
+        setPasswordError(true);
+      }
+    } catch (error: any) {
+      // Manejar errores de la API
+      if (axios.isAxiosError(error)) {
+        // El servidor respondió con un código de estado diferente de 2xx
+        console.error('Error en el inicio de sesión:', error.response?.data);
+        
+        // Establecer los errores en true para mostrar mensajes de error en el formulario
+        setEmailError(true);
+        setPasswordError(true);
+      } else {
+        // Ocurrió un error antes de recibir una respuesta del servidor
+        console.error('Error al iniciar sesión:', error.message);
+      }
+    } finally {
+      if (redirectToChat) {
+        console.log("Antes de redirección");
+        router.push('/chat');
+      }
+    }
+  };  
+  
+  const handleLogin = async () => {
+    // Validaciones adicionales si es necesario
+    if (!email) {
+      setEmailError(true);
+    } else {
+      setEmailError(false);
+    }
+  
+    if (!password) {
+      setPasswordError(true);
+    } else {
+      setPasswordError(false);
+    }
+  
+    // Realizar la acción de inicio de sesión solo si no hay errores
+    if (!emailError && !passwordError) {
+      // Aquí puedes realizar la acción de inicio de sesión
+      await loginUser();
+    }
+  };
+
+  // const [show, setShow] = React.useState(false);
   const handleClick = () => setShow(!show);
+
   return (
     <DefaultAuth illustrationBackground={illustration?.src}>
       <Flex
@@ -131,10 +216,12 @@ function SignUp() {
               placeholder="Enter your email address"
               mb="24px"
               size="lg"
-              borderColor={borderColor}
+              // borderColor={borderColor}
+              borderColor={emailError ? "red" : borderColor}
               h="54px"
               fontWeight="500"
               _placeholder={{ placeholderColor }}
+              onChange={handleEmailChange}
             />
             {/* PASSWORD */}
             <FormLabel
@@ -142,7 +229,7 @@ function SignUp() {
               ms="4px"
               fontSize="sm"
               fontWeight="500"
-              htmlFor="pass"
+              htmlFor="password"
               color={textColor}
               display="flex"
             >
@@ -152,16 +239,17 @@ function SignUp() {
               <Input
                 isRequired={true}
                 variant="auth"
-                id="pass"
+                id="password"
                 fontSize="sm"
                 placeholder="Enter your password"
                 mb="24px"
                 size="lg"
-                borderColor={borderColor}
+                borderColor={passwordError ? "red" : borderColor}
                 h="54px"
                 fontWeight="500"
                 _placeholder={{ placeholderColor }}
                 type={show ? 'text' : 'password'}
+                onChange={handlePasswordChange}
               />
               <InputRightElement display="flex" alignItems="center" mt="4px">
                 <Icon
@@ -178,6 +266,7 @@ function SignUp() {
                   id="remember-login"
                   colorScheme="brandScheme"
                   me="10px"
+                  onChange={() => setKeepLoggedIn(!keepLoggedIn)}
                 />
                 <FormLabel
                   htmlFor="remember-login"
@@ -202,6 +291,8 @@ function SignUp() {
             </Flex>
             {/* CONFIRM */}
             <Button
+              onClick={handleLogin}
+
               variant="primary"
               py="20px"
               px="16px"

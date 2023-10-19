@@ -40,7 +40,7 @@ export default function DefaultAuthLayout(props: DefaultAuthLayoutProps) {
             marginTop: '40px',
           }}
         >
-          <Flex
+          {/* <Flex
             align="center"
             ps={{ base: '25px', lg: '0px' }}
             pt={{ lg: '0px', xl: '0px' }}
@@ -56,7 +56,7 @@ export default function DefaultAuthLayout(props: DefaultAuthLayoutProps) {
             <Text ms="0px" fontSize="sm" color="gray.500">
               Back to the dashboard
             </Text>
-          </Flex>
+          </Flex> */}
         </NavLink>
         {children}
         <Box

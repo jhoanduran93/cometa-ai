@@ -8,8 +8,9 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    // router.push('/all-templates');
-    router.push('/chat');
+    
+  //router.push('/others/sign-in');
+  router.push('/chat')
   }, []);
   return (
     <Flex
