@@ -12,6 +12,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Icon,
   InputGroup,
   InputRightElement,
   Text,
@@ -19,6 +20,8 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { MdOutlineRemoveRedEye } from 'react-icons/md';
+import { RiEyeCloseLine } from 'react-icons/ri';
 
 interface APIModalProps {
   isOpen: boolean; // Especifica el tipo de isOpen
@@ -27,7 +30,7 @@ interface APIModalProps {
 
 function APIModal({ isOpen, onClose }: APIModalProps) {
   const textColor = useColorModeValue('navy.700', 'white');
-  // const textColorSecondary = 'gray.500';
+  const textColorSecondary = 'gray.500';
   // const textColorDetails = useColorModeValue('navy.700', 'gray.500');
   // const textColorBrand = useColorModeValue('brand.500', 'white');
   const brandStars = useColorModeValue('brand.500', 'brand.400');
@@ -36,6 +39,7 @@ function APIModal({ isOpen, onClose }: APIModalProps) {
     { color: 'gray.500', fontWeight: '500' },
     { color: 'whiteAlpha.600', fontWeight: '500' },
   );
+  const [show, setShow] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -71,7 +75,7 @@ function APIModal({ isOpen, onClose }: APIModalProps) {
       } else {
         // El servidor respondió, pero no fue un inicio de sesión exitoso
         console.error('Error en el inicio de sesión:', response.data);
-        setLoginError("Correo o contraseña incorrectos"); // Establece el mensaje de error
+       
       }
     } catch (error: any) {
       // Manejar errores de la API
@@ -82,7 +86,7 @@ function APIModal({ isOpen, onClose }: APIModalProps) {
       } else {
         // Ocurrió un error antes de recibir una respuesta del servidor
         console.error('Error al iniciar sesión:', error.message);
-        setLoginError("Error al iniciar sesión"); // Establece el mensaje de error
+        
       }
     } finally {
       if (redirectToChat) {
@@ -96,6 +100,8 @@ function APIModal({ isOpen, onClose }: APIModalProps) {
     // Validaciones adicionales si es necesario
       await loginUser();
   };
+
+  const handleClick = () => setShow(!show);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -145,22 +151,31 @@ function APIModal({ isOpen, onClose }: APIModalProps) {
             >
               Password<Text color={brandStars}></Text>
             </FormLabel>
-            <Input
-              // isRequired={true}
-              id="password"
-              variant="auth"
-              fontSize="sm"
-              placeholder="Enter your password"
-              mb="24px"
-              size="lg"
-              borderColor={borderColor}
-              h="54px"
-              fontWeight="500"
-              _placeholder={{ color: placeholderColor }}
-              type="password"
-              onChange={handlePasswordChange}
-              value={password}
-            />
+            <InputGroup size="md">
+              <Input
+                isRequired={true}
+                variant="auth"
+                id="password"
+                fontSize="sm"
+                placeholder="Enter your password"
+                mb="24px"
+                size="lg"
+                borderColor={passwordError ? "red" : borderColor}
+                h="54px"
+                fontWeight="500"
+                _placeholder={{ placeholderColor }}
+                type={show ? 'text' : 'password'}
+                onChange={handlePasswordChange}
+              />
+              <InputRightElement display="flex" alignItems="center" mt="4px">
+                <Icon
+                  color={textColorSecondary}
+                  _hover={{ cursor: 'pointer' }}
+                  as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
+                  onClick={handleClick}
+                />
+              </InputRightElement>
+            </InputGroup>
           </FormControl>
         </ModalBody>
         <ModalFooter>

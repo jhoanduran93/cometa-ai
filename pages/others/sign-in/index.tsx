@@ -19,7 +19,6 @@ import {
 import illustration from '/public/img/auth/auth2.jpg';
 import { HSeparator } from '@/components/separator/Separator';
 import DefaultAuth from '@/components/auth';
-//import React from 'react';
 import { FcBusinessman } from 'react-icons/fc';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 import { RiEyeCloseLine } from 'react-icons/ri';
