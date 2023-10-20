@@ -1,252 +1,185 @@
 'use client';
-import Card from '@/components/card/Card';
+import React, { useState } from "react";
 import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  Box,
   Button,
-  Flex,
-  Icon,
-  Input,
-  Link,
-  ListItem,
-  UnorderedList,
   Modal,
-  ModalBody,
-  ModalCloseButton,
+  ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalOverlay,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  FormControl,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputRightElement,
   Text,
   useColorModeValue,
-  useDisclosure,
-  useToast,
-} from '@chakra-ui/react';
-import { useState } from 'react';
-import { MdLock } from 'react-icons/md';
+} from "@chakra-ui/react";
+import axios from "axios";
+import { useRouter } from "next/router";
 
-function APIModal(props: { setApiKey: any; sidebar?: boolean }) {
-  const { setApiKey, sidebar } = props;
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [inputCode, setInputCode] = useState<string>('');
+interface APIModalProps {
+  isOpen: boolean; // Especifica el tipo de isOpen
+  onClose: () => void;
+}
 
+function APIModal({ isOpen, onClose }: APIModalProps) {
   const textColor = useColorModeValue('navy.700', 'white');
-  const grayColor = useColorModeValue('gray.500', 'gray.500');
-  const inputBorder = useColorModeValue('gray.200', 'whiteAlpha.200');
-  const inputColor = useColorModeValue('navy.700', 'white');
-  const link = useColorModeValue('brand.500', 'white');
-  const navbarIcon = useColorModeValue('gray.500', 'white');
-  const toast = useToast();
+  // const textColorSecondary = 'gray.500';
+  // const textColorDetails = useColorModeValue('navy.700', 'gray.500');
+  // const textColorBrand = useColorModeValue('brand.500', 'white');
+  const brandStars = useColorModeValue('brand.500', 'brand.400');
+  const borderColor = useColorModeValue('gray.200', 'whiteAlpha.200');
+  const placeholderColor = useColorModeValue(
+    { color: 'gray.500', fontWeight: '500' },
+    { color: 'whiteAlpha.600', fontWeight: '500' },
+  );
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleChange = (Event: any) => {
-    setInputCode(Event.target.value);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [loginError, setLoginError] = useState("");
+
+  const router = useRouter();
+  let redirectToChat = false;
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
   };
 
-  const handleApiKeyChange = (value: string) => {
-    setApiKey(value);
-
-    localStorage.setItem('apiKey', value);
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
   };
+
+  const loginUser = async () => {
+    try {
+      console.log('Antes de la solicitud');
+      const response = await axios.post('https://cometa-c40d5067bfcf.herokuapp.com/login', {
+        email: email,
+        password: password,
+      });
+  
+      console.log('Después de la solicitud, antes de verificar el código de estado');
+      // Verificar el código de estado de la respuesta
+      if (response.status === 200) {
+        redirectToChat = true;
+        // El inicio de sesión fue exitoso
+        console.log('Inicio de sesión exitoso:', response.data);
+      } else {
+        // El servidor respondió, pero no fue un inicio de sesión exitoso
+        console.error('Error en el inicio de sesión:', response.data);
+        setLoginError("Correo o contraseña incorrectos"); // Establece el mensaje de error
+      }
+    } catch (error: any) {
+      // Manejar errores de la API
+      if (axios.isAxiosError(error)) {
+        // El servidor respondió con un código de estado diferente de 2xx
+        console.error('Error en el inicio de sesión:', error.response?.data);
+        setLoginError("Correo o contraseña incorrectos"); // Establece el mensaje de error
+      } else {
+        // Ocurrió un error antes de recibir una respuesta del servidor
+        console.error('Error al iniciar sesión:', error.message);
+        setLoginError("Error al iniciar sesión"); // Establece el mensaje de error
+      }
+    } finally {
+      if (redirectToChat) {
+        console.log("Antes de redirección");
+        router.push('/chat');
+      }
+    }
+  };
+
+  const handleLogin = async () => {
+    // Validaciones adicionales si es necesario
+      await loginUser();
+  };
+
   return (
-    <>
-      {sidebar ? (
-        <Button
-          onClick={onOpen}
-          display="flex"
-          variant="api"
-          fontSize={'sm'}
-          fontWeight="600"
-          borderRadius={'45px'}
-          mt="8px"
-          minH="40px"
-        >
-          Set API Key
-        </Button>
-      ) : (
-        <Button
-          onClick={onOpen}
-          minW="max-content !important"
-          p="0px"
-          me="10px"
-          _hover={{ bg: 'none' }}
-          _focus={{ bg: 'none' }}
-          _selected={{ bg: 'none' }}
-          bg="none !important"
-        >
-          <Icon w="18px" h="18px" as={MdLock} color={navbarIcon} />
-        </Button>
-      )}
-
-      <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent bg="none" boxShadow="none">
-          <Card textAlign={'center'}>
-            <ModalHeader
-              fontSize="22px"
-              fontWeight={'700'}
-              mx="auto"
-              textAlign={'center'}
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Sign In as a Guest</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <FormControl>
+            <FormLabel
+              cursor="pointer"
+              display="flex"
+              ms="4px"
+              htmlFor="email"
+              fontSize="sm"
+              fontWeight="500"
               color={textColor}
+              mb="8px"
             >
-              Enter your OpenAI API Key
-            </ModalHeader>
-            <ModalCloseButton _focus={{ boxShadow: 'none' }} />
-            <ModalBody p="0px">
-              <Text
-                color={grayColor}
-                fontWeight="500"
-                fontSize="md"
-                lineHeight="28px"
-                mb="22px"
-              >
-                You need an OpenAI API Key to use Horizon AI Template's
-                features. Your API Key is stored locally on your browser and
-                never sent anywhere else.
-              </Text>
-              <Flex mb="20px">
-                <Input
-                  h="100%"
-                  border="1px solid"
-                  borderColor={inputBorder}
-                  borderRadius="45px"
-                  p="15px 20px"
-                  me="10px"
-                  fontSize="sm"
-                  fontWeight="500"
-                  _focus={{ borderColor: 'none' }}
-                  _placeholder={{ color: 'gray.500' }}
-                  color={inputColor}
-                  placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                  onChange={handleChange}
-                  value={inputCode}
-                />
-                <Button
-                  variant="chakraLinear"
-                  py="20px"
-                  px="16px"
-                  fontSize="sm"
-                  borderRadius="45px"
-                  ms="auto"
-                  mb={{ base: '20px', md: '0px' }}
-                  w={{ base: '300px', md: '180px' }}
-                  h="54px"
-                  onClick={() => {
-                    inputCode?.includes('sk-')
-                      ? handleApiKeyChange(inputCode)
-                      : null;
-                    if (inputCode)
-                      toast({
-                        title: inputCode?.includes('sk-')
-                          ? `Success! You have successfully added your API key!`
-                          : !inputCode?.includes('sk-')
-                          ? `Invalid API key. Please make sure your API key is still working properly.`
-                          : 'Please add your API key!',
-                        position: 'top',
-                        status: inputCode?.includes('sk-')
-                          ? 'success'
-                          : !inputCode?.includes('sk-')
-                          ? `error`
-                          : !inputCode
-                          ? 'warning'
-                          : 'error',
-                        isClosable: true,
-                      });
-                  }}
-                >
-                  Save API Key
-                </Button>
-              </Flex>
-              <Link
-                color={link}
-                fontSize="sm"
-                href="https://platform.openai.com/account/api-keys"
-                textDecoration="underline !important"
-                fontWeight="600"
-              >
-                Get your API key from Open AI Dashboard
-              </Link>
-              <Accordion allowToggle w="100%" my="16px">
-                <AccordionItem border="none">
-                  <AccordionButton
-                    borderBottom="0px solid"
-                    maxW="max-content"
-                    mx="auto"
-                    _hover={{ border: '0px solid', bg: 'none' }}
-                    _focus={{ border: '0px solid', bg: 'none' }}
-                  >
-                    <Box flex="1" textAlign="left">
-                      <Text
-                        color={textColor}
-                        fontWeight="700"
-                        fontSize={{ sm: 'md', lg: 'md' }}
-                      >
-                        Your API Key is not working?
-                      </Text>
-                    </Box>
-                    <AccordionIcon color={textColor} />
-                  </AccordionButton>
-                  <AccordionPanel p="18px 0px 10px 0px">
-                    <UnorderedList p="5px">
-                      <ListItem
-                        mb="26px"
-                        color={grayColor}
-                        fontSize=",d"
-                        fontWeight="500"
-                      >
-                        Make sure you have an{' '}
-                        <Link
-                          textDecoration="underline"
-                          fontSize=",d"
-                          href="https://platform.openai.com/account/"
-                          fontWeight="500"
-                          color={grayColor}
-                        >
-                          OpenAI account
-                        </Link>{' '}
-                        and a valid API key to use ChatGPT. We don't sell API
-                        keys.
-                      </ListItem>
-                      <ListItem
-                        color={grayColor}
-                        fontSize="md"
-                        lineHeight="28px"
-                        fontWeight="500"
-                      >
-                        Make sure you have your billing info added in{' '}
-                        <Link
-                          textDecoration="underline"
-                          fontSize="md"
-                          lineHeight="28px"
-                          href="https://platform.openai.com/account/billing/overview"
-                          fontWeight="500"
-                          color={grayColor}
-                        >
-                          OpenAI Billing
-                        </Link>{' '}
-                        page. Without billing info, your API key will not work.
-                      </ListItem>
-                    </UnorderedList>
-                  </AccordionPanel>
-                </AccordionItem>
-              </Accordion>
-              <Text
-                color={grayColor}
-                fontWeight="500"
-                fontSize="sm"
-                mb="42px"
-                mx="30px"
-              >
-                *The app will connect to OpenAI API server to check if your API
-                Key is working properly.
-              </Text>
-            </ModalBody>
-          </Card>
-        </ModalContent>
-      </Modal>
-    </>
+              Email<Text color={brandStars}></Text>
+            </FormLabel>
+            <Input
+              // isRequired={true}
+              id="email"
+              variant="auth"
+              fontSize="sm"
+              type="email"
+              placeholder="Enter your email address"
+              mb="24px"
+              size="lg"
+              borderColor={borderColor}
+              h="54px"
+              fontWeight="500"
+              _placeholder={{ color: placeholderColor }}
+              onChange={handleEmailChange}
+              value={email}
+            />
+
+            <FormLabel
+              cursor="pointer"
+              ms="4px"
+              fontSize="sm"
+              fontWeight="500"
+              htmlFor="password"
+              color={textColor}
+              display="flex"
+            >
+              Password<Text color={brandStars}></Text>
+            </FormLabel>
+            <Input
+              // isRequired={true}
+              id="password"
+              variant="auth"
+              fontSize="sm"
+              placeholder="Enter your password"
+              mb="24px"
+              size="lg"
+              borderColor={borderColor}
+              h="54px"
+              fontWeight="500"
+              _placeholder={{ color: placeholderColor }}
+              type="password"
+              onChange={handlePasswordChange}
+              value={password}
+            />
+          </FormControl>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            onClick={handleLogin}
+            variant="primary"
+            py="20px"
+            px="16px"
+            fontSize="sm"
+            borderRadius="45px"
+            w="100%"
+            h="54px"
+            mb="24px"
+          >
+            Sign In
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 }
 

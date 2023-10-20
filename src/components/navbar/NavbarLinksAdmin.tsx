@@ -19,7 +19,7 @@ import { SearchBar } from '@/components/navbar/searchBar/SearchBar';
 import { SidebarResponsive } from '@/components/sidebar/Sidebar';
 import { IoMdMoon, IoMdSunny } from 'react-icons/io';
 import { MdInfoOutline } from 'react-icons/md';
-import APIModal from '@/components/apiModal';
+import { FcIdea } from 'react-icons/fc';
 import NavLink from '../link/NavLink';
 import routes from '@/routes';
 
@@ -71,7 +71,6 @@ export default function HeaderLinks(props: {
         borderRadius="30px"
       />
       <SidebarResponsive routes={routes} />
-      <APIModal setApiKey={setApiKey} />
 
       <Menu>
         <MenuButton p="0px">
@@ -97,24 +96,7 @@ export default function HeaderLinks(props: {
         >
           {/* <Flex bgImage={navImage} borderRadius="16px" mb="28px" alt="" /> */}
           <Flex flexDirection="column">
-            <Link
-              isExternal
-              w="100%"
-              href="https://horizon-ui.com/ai-template/"
-            >
-              <Button
-                variant="primary"
-                py="20px"
-                px="16px"
-                fontSize="sm"
-                borderRadius="45px"
-                mb="10px"
-                w="100%"
-                h="54px"
-              >
-                Buy Horizon AI Template
-              </Button>
-            </Link>
+
             <Link
               isExternal
               w="100%"
@@ -136,26 +118,10 @@ export default function HeaderLinks(props: {
                 _active={activeButton}
                 _focus={activeButton}
               >
-                See Documentation
+                view Tips! <Icon as={FcIdea} w="20px" h="20px" me="10px" />
               </Button>
             </Link>
-            <Link
-              w="100%"
-              isExternal
-              href="https://github.com/horizon-ui/chatgpt-ai-template"
-            >
-              <Button
-                w="100%"
-                h="44px"
-                variant="no-hover"
-                color={textColor}
-                fontSize="sm"
-                borderRadius="45px"
-                bg="transparent"
-              >
-                Try Free Version
-              </Button>
-            </Link>
+
           </Flex>
         </MenuList>
       </Menu>
@@ -178,6 +144,9 @@ export default function HeaderLinks(props: {
           as={colorMode === 'light' ? IoMdMoon : IoMdSunny}
         />
       </Button>
+
+       {/* profile */}
+       
       <Menu>
         <MenuButton p="0px" style={{ position: 'relative' }}>
           <Box

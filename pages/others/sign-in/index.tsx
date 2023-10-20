@@ -20,13 +20,14 @@ import illustration from '/public/img/auth/auth2.jpg';
 import { HSeparator } from '@/components/separator/Separator';
 import DefaultAuth from '@/components/auth';
 //import React from 'react';
-import { FcGoogle } from 'react-icons/fc';
+import { FcBusinessman } from 'react-icons/fc';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 import { RiEyeCloseLine } from 'react-icons/ri';
 import NavLink from '@/components/link/NavLink';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import APIModal from '@/components/apiModal';
 
 
 function SignUp() {
@@ -47,7 +48,10 @@ function SignUp() {
 
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [loginError, setLoginError] = useState("");
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
@@ -74,23 +78,18 @@ function SignUp() {
       } else {
         // El servidor respondió, pero no fue un inicio de sesión exitoso
         console.error('Error en el inicio de sesión:', response.data);
-        
-        // Establecer los errores en true para mostrar mensajes de error en el formulario
-        setEmailError(true);
-        setPasswordError(true);
+        setLoginError("Correo o contraseña incorrectos"); // Establece el mensaje de error
       }
     } catch (error: any) {
       // Manejar errores de la API
       if (axios.isAxiosError(error)) {
         // El servidor respondió con un código de estado diferente de 2xx
         console.error('Error en el inicio de sesión:', error.response?.data);
-        
-        // Establecer los errores en true para mostrar mensajes de error en el formulario
-        setEmailError(true);
-        setPasswordError(true);
+        setLoginError("Correo o contraseña incorrectos"); // Establece el mensaje de error
       } else {
         // Ocurrió un error antes de recibir una respuesta del servidor
         console.error('Error al iniciar sesión:', error.message);
+        setLoginError("Error al iniciar sesión"); // Establece el mensaje de error
       }
     } finally {
       if (redirectToChat) {
@@ -98,7 +97,8 @@ function SignUp() {
         router.push('/chat');
       }
     }
-  };  
+  };
+  
   
   const handleLogin = async () => {
     // Validaciones adicionales si es necesario
@@ -178,10 +178,16 @@ function SignUp() {
             fontSize="md"
             w={{ base: '100%' }}
             h="54px"
+            onClick={() => setIsModalOpen(true)}
           >
-            <Icon as={FcGoogle} w="20px" h="20px" me="10px" />
-            Sign in with Google
+            <Icon as={FcBusinessman} w="20px" h="20px" me="10px" />
+            Sign in as a guest
           </Button>
+
+          {/* Renderiza el modal si isModalOpen es verdadero */}
+          {isModalOpen && <APIModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
+
+
           <Flex align="center" mb="25px">
             <HSeparator />
             <Text
@@ -194,6 +200,11 @@ function SignUp() {
             </Text>
             <HSeparator />
           </Flex>
+          {loginError && (
+  <Text color="red.500" fontSize="sm" mb="16px">
+    {loginError}
+  </Text>
+)}
           <FormControl>
             <FormLabel
               cursor="pointer"
@@ -292,7 +303,6 @@ function SignUp() {
             {/* CONFIRM */}
             <Button
               onClick={handleLogin}
-
               variant="primary"
               py="20px"
               px="16px"
@@ -305,6 +315,7 @@ function SignUp() {
             >
               Sign In
             </Button>
+
           </FormControl>
           <Flex justifyContent="center" alignItems="start" maxW="100%" mt="0px">
             <Text color={textColorDetails} fontWeight="500" fontSize="sm">
