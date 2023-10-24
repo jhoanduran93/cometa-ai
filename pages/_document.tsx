@@ -5,7 +5,7 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <title>BrainWave AI ChatBot</title>
+        <title>Cometa AI ChatBot</title>
         {/* <meta name="description" content="" /> */}
         <link rel="icon" type="image/x-icon" href="/brain.ico" />
       </Head>

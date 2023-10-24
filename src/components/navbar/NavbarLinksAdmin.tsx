@@ -98,9 +98,9 @@ export default function HeaderLinks(props: {
           <Flex flexDirection="column">
 
             <Link
-              isExternal
+              // isExternal
               w="100%"
-              href="https://horizon-ui.com/docs-ai-template/"
+              href="/article"
             >
               <Button
                 bg={buttonBg}

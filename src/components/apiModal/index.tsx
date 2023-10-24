@@ -107,7 +107,7 @@ function APIModal({ isOpen, onClose }: APIModalProps) {
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Sign In as a Guest</ModalHeader>
+        <ModalHeader>Iniciar sesión como invitado</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl>
@@ -129,7 +129,7 @@ function APIModal({ isOpen, onClose }: APIModalProps) {
               variant="auth"
               fontSize="sm"
               type="email"
-              placeholder="Enter your email address"
+              placeholder="Introduzca su email"
               mb="24px"
               size="lg"
               borderColor={borderColor}
@@ -149,7 +149,7 @@ function APIModal({ isOpen, onClose }: APIModalProps) {
               color={textColor}
               display="flex"
             >
-              Password<Text color={brandStars}></Text>
+              Contraseña<Text color={brandStars}></Text>
             </FormLabel>
             <InputGroup size="md">
               <Input
@@ -157,7 +157,7 @@ function APIModal({ isOpen, onClose }: APIModalProps) {
                 variant="auth"
                 id="password"
                 fontSize="sm"
-                placeholder="Enter your password"
+                placeholder="Introduzca su contraseña"
                 mb="24px"
                 size="lg"
                 borderColor={passwordError ? "red" : borderColor}

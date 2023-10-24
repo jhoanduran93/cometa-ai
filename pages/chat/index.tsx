@@ -1,9 +1,8 @@
-'use client';
-/*eslint-disable*/
-
-import Link from '@/components/link/Link';
+import React, { useState, useEffect, useRef } from 'react';
+import { MdAutoAwesome, MdEdit, MdPerson } from 'react-icons/md';
+import Bg from '../../public/img/chat/bg-image.png';
 import MessageBoxChat from '@/components/MessageBoxChat';
-import { ChatBody, OpenAIModel } from '@/types/types';
+import { ChatBody } from '@/types/types';
 import {
   Accordion,
   AccordionButton,
@@ -20,25 +19,14 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
-import { MdAutoAwesome, MdBolt, MdEdit, MdPerson } from 'react-icons/md';
-import Bg from '../../public/img/chat/bg-image.png';
 
-export default function Chat(props: { apiKeyApp: string }) {
-  // *** If you use .env.local variable for your API key, method which we recommend, use the apiKey variable commented below
-  const { apiKeyApp } = props;
-  // Input States
-  const [inputOnSubmit, setInputOnSubmit] = useState<string>('');
-  const [inputCode, setInputCode] = useState<string>('');
-  // Response message
+function App() {
+  const [messages, setMessages] = useState<string[]>([]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [websocket, setWebsocket] = useState<WebSocket | null>(null);
+  const messageContainerRef = useRef<HTMLDivElement | null>(null);
   const [outputCode, setOutputCode] = useState<string>('');
-  // ChatGPT model
-  const [model, setModel] = useState<OpenAIModel>('gpt-3.5-turbo');
-  // Loading state
-  const [loading, setLoading] = useState<boolean>(false);
 
-  // API Key
-  // const [apiKey, setApiKey] = useState<string>(apiKeyApp);
   const borderColor = useColorModeValue('gray.200', 'whiteAlpha.200');
   const inputColor = useColorModeValue('navy.700', 'white');
   const iconColor = useColorModeValue('brand.500', 'white');
@@ -58,101 +46,56 @@ export default function Chat(props: { apiKeyApp: string }) {
     { color: 'gray.500' },
     { color: 'whiteAlpha.600' },
   );
-  const handleTranslate = async () => {
-    const apiKey = apiKeyApp;
-    setInputOnSubmit(inputCode);
 
-    // Chat post conditions(maximum number of characters, valid message etc.)
-    const maxCodeLength = model === 'gpt-3.5-turbo' ? 700 : 700;
+  useEffect(() => {
+    const ws = new WebSocket('wss://cometa-c40d5067bfcf.herokuapp.com/chatbot');
+    setWebsocket(ws);
 
-    if (!apiKeyApp?.includes('sk-') && !apiKey?.includes('sk-')) {
-      alert('Please enter an API key.');
-      return;
-    }
-
-    if (!inputCode) {
-      alert('Please enter your subject.');
-      return;
-    }
-
-    if (inputCode.length > maxCodeLength) {
-      alert(
-        `Please enter code less than ${maxCodeLength} characters. You are currently at ${inputCode.length} characters.`,
-      );
-      return;
-    }
-    setOutputCode(' ');
-    setLoading(true);
-    const controller = new AbortController();
-    const body: ChatBody = {
-      inputCode,
-      model,
-      apiKey,
+    ws.onopen = () => {
+      console.log('WebSocket connected');
     };
 
-    // -------------- Fetch --------------
-    const response = await fetch('../api/chatAPI', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      signal: controller.signal,
-      body: JSON.stringify(body),
-    });
+    ws.onmessage = (event) => {
+      const message = event.data;
+      if (message.trim() !== '?') {
+        if (message.startsWith('Cliente:')) {
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            `Tu pregunta es: ${message.slice(7)}`,
+          ]);
+        } else {
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            `\t ${message}`,
+          ]);
 
-    if (!response.ok) {
-      setLoading(false);
-      if (response) {
-        alert(
-          'Something went wrong went fetching from the API. Make sure to use a valid API key.',
-        );
+          if (messageContainerRef.current) {
+            messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+          }
+        }
       }
-      return;
+    };
+    setInputMessage(' ');
+    return () => {
+      ws.close();
+    };
+  }, []);
+
+  const handleSendMessage = () => {
+    if (inputMessage.trim() === '') return;
+
+    const question = `¿${inputMessage}?`;
+
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      `Tu pregunta es: ${question}`,
+    ]);
+
+    if (websocket && websocket.readyState === WebSocket.OPEN) {
+      console.log(inputMessage);
+      websocket.send(question);
+      setInputMessage('');
     }
-
-    const data = response.body;
-
-    if (!data) {
-      setLoading(false);
-      alert('Something went wrong');
-      return;
-    }
-
-    const reader = data.getReader();
-    const decoder = new TextDecoder();
-    let done = false;
-
-    while (!done) {
-      setLoading(true);
-      const { value, done: doneReading } = await reader.read();
-      done = doneReading;
-      const chunkValue = decoder.decode(value);
-      setOutputCode((prevCode) => prevCode + chunkValue);
-    }
-
-    setLoading(false);
-  };
-  // -------------- Copy Response --------------
-  // const copyToClipboard = (text: string) => {
-  //   const el = document.createElement('textarea');
-  //   el.value = text;
-  //   document.body.appendChild(el);
-  //   el.select();
-  //   document.execCommand('copy');
-  //   document.body.removeChild(el);
-  // };
-
-  // *** Initializing apiKey with .env.local value
-  // useEffect(() => {
-  // ENV file verison
-  // const apiKeyENV = process.env.NEXT_PUBLIC_OPENAI_API_KEY
-  // if (apiKey === undefined || null) {
-  //   setApiKey(apiKeyENV)
-  // }
-  // }, [])
-
-  const handleChange = (Event: any) => {
-    setInputCode(Event.target.value);
   };
 
   return (
@@ -163,7 +106,7 @@ export default function Chat(props: { apiKeyApp: string }) {
       position="relative"
     >
       <Img
-        src={Bg.src}
+        // src={Bg.src}
         position={'absolute'}
         w="350px"
         left="50%"
@@ -176,85 +119,20 @@ export default function Chat(props: { apiKeyApp: string }) {
         w={{ base: '100%', md: '100%', xl: '100%' }}
         minH={{ base: '75vh', '2xl': '85vh' }}
         maxW="1000px"
-      >
-        {/* Model Change */}
-        <Flex direction={'column'} w="100%" mb={outputCode ? '20px' : 'auto'}>
+       >
+        <Flex
+          direction={'column'}
+          w="100%"
+          mb={messages.length > 0 ? '20px' : 'auto'}
+         >
           <Flex
             mx="auto"
             zIndex="2"
             w="max-content"
             mb="20px"
             borderRadius="60px"
-          >
-            {/* <Flex
-              cursor={'pointer'}
-              transition="0.3s"
-              justify={'center'}
-              align="center"
-              bg={model === 'gpt-3.5-turbo' ? buttonBg : 'transparent'}
-              w="174px"
-              h="70px"
-              boxShadow={model === 'gpt-3.5-turbo' ? buttonShadow : 'none'}
-              borderRadius="14px"
-              color={textColor}
-              fontSize="18px"
-              fontWeight={'700'}
-              onClick={() => setModel('gpt-3.5-turbo')}
-            >
-              <Flex
-                borderRadius="full"
-                justify="center"
-                align="center"
-                bg={bgIcon}
-                me="10px"
-                h="39px"
-                w="39px"
-              >
-                <Icon
-                  as={MdAutoAwesome}
-                  width="20px"
-                  height="20px"
-                  color={iconColor}
-                />
-              </Flex>
-              GPT-3.5
-            </Flex>
-            <Flex
-              cursor={'pointer'}
-              transition="0.3s"
-              justify={'center'}
-              align="center"
-              bg={model === 'gpt-4' ? buttonBg : 'transparent'}
-              w="164px"
-              h="70px"
-              boxShadow={model === 'gpt-4' ? buttonShadow : 'none'}
-              borderRadius="14px"
-              color={textColor}
-              fontSize="18px"
-              fontWeight={'700'}
-              onClick={() => setModel('gpt-4')}
-            >
-              <Flex
-                borderRadius="full"
-                justify="center"
-                align="center"
-                bg={bgIcon}
-                me="10px"
-                h="39px"
-                w="39px"
-              >
-                <Icon
-                  as={MdBolt}
-                  width="20px"
-                  height="20px"
-                  color={iconColor}
-                />
-              </Flex>
-              GPT-4
-            </Flex> */}
-          </Flex>
-
-          <Accordion color={gray} allowToggle w="100%" my="0px" mx="auto">
+          />
+          {/* <Accordion color={gray} allowToggle w="100%" my="0px" mx="auto">
             <AccordionItem border="none">
               <AccordionButton
                 borderBottom="0px solid"
@@ -265,7 +143,7 @@ export default function Chat(props: { apiKeyApp: string }) {
               >
                 <Box flex="1" textAlign="left">
                   <Text color={gray} fontWeight="500" fontSize="sm">
-                  Encuentra temas relacionados con
+                    Encuentra temas relacionados con
                   </Text>
                 </Box>
                 <AccordionIcon color={gray} />
@@ -289,89 +167,64 @@ export default function Chat(props: { apiKeyApp: string }) {
                 </Text>
               </AccordionPanel>
             </AccordionItem>
-          </Accordion>
+          </Accordion> */}
         </Flex>
-        {/* Main Box */}
+
         <Flex
           direction="column"
           w="100%"
           mx="auto"
-          display={outputCode ? 'flex' : 'none'}
+          display={messages.length > 0 ? 'flex' : 'none'}
           mb={'auto'}
-        >
-          <Flex w="100%" align={'center'} mb="10px">
+         >
+
+      <Flex w="100%">
+        <Flex direction="column" w="100%">
+          {messages.map((message, index) => (
             <Flex
-              borderRadius="full"
-              justify="center"
-              align="center"
-              bg={'transparent'}
-              border="1px solid"
-              borderColor={borderColor}
-              me="20px"
-              h="40px"
-              minH="40px"
-              minW="40px"
+              key={index}
+              style={{
+                display: 'flex',
+                alignSelf: message.startsWith('Tu pregunta es:') ? 'flex-end' : 'flex-start',
+                justifyContent: message.startsWith('Tu pregunta es:') ? 'flex-end' : 'flex-start',
+                textAlign: 'left',
+                marginBottom: '20px',
+                maxWidth: '70%',
+              }}
             >
-              <Icon
-                as={MdPerson}
-                width="20px"
-                height="20px"
-                color={brandColor}
-              />
-            </Flex>
-            <Flex
-              p="22px"
-              border="1px solid"
-              borderColor={borderColor}
-              borderRadius="14px"
-              w="100%"
-              zIndex={'2'}
-            >
-              <Text
-                color={textColor}
-                fontWeight="600"
-                fontSize={{ base: 'sm', md: 'md' }}
-                lineHeight={{ base: '24px', md: '26px' }}
+              {message.startsWith('\t') && (
+                <Flex
+                  borderRadius="full"
+                  justify="center"
+                  align="center"
+                  bg={'linear-gradient(15.46deg, #4A25E1 26.3%, #7B5AFF 86.4%)'}
+                  me="20px"
+                  h="40px"
+                  minH="40px"
+                  minW="40px"
+                >
+                  <Icon as={MdAutoAwesome} width="20px" height="20px" color="white" />
+                </Flex>
+              )}
+              <div
+                style={{
+                  backgroundColor: message.startsWith('Tu pregunta es:') ? '#4A25E1' : '#F2F2F2',
+                  color: message.startsWith('Tu pregunta es:') ? 'white' : 'black',
+                  borderRadius: '20px',
+                  padding: '18px',
+                }}
               >
-                {inputOnSubmit}
-              </Text>
-              <Icon
-                cursor="pointer"
-                as={MdEdit}
-                ms="auto"
-                width="20px"
-                height="20px"
-                color={gray}
-              />
+                {message}
+              </div>
             </Flex>
-          </Flex>
-          <Flex w="100%">
-            <Flex
-              borderRadius="full"
-              justify="center"
-              align="center"
-              bg={'linear-gradient(15.46deg, #4A25E1 26.3%, #7B5AFF 86.4%)'}
-              me="20px"
-              h="40px"
-              minH="40px"
-              minW="40px"
-            >
-              <Icon
-                as={MdAutoAwesome}
-                width="20px"
-                height="20px"
-                color="white"
-              />
-            </Flex>
-            <MessageBoxChat output={outputCode} />
-          </Flex>
+          ))}
         </Flex>
-        {/* Chat Input */}
-        <Flex
-          ms={{ base: '0px', xl: '60px' }}
-          mt="20px"
-          justifySelf={'flex-end'}
-        >
+      </Flex>
+
+
+        </Flex>
+
+        <Flex ms={{ base: '0px', xl: '60px' }} mt="20px" justifySelf={'flex-end'}>
           <Input
             minH="54px"
             h="100%"
@@ -386,7 +239,8 @@ export default function Chat(props: { apiKeyApp: string }) {
             color={inputColor}
             _placeholder={placeholderColor}
             placeholder="Escribe tu mensaje aquí..."
-            onChange={handleChange}
+            // value={inputMessage}
+            onChange={(e) => setInputMessage(e.target.value)}
           />
           <Button
             variant="primary"
@@ -398,45 +252,26 @@ export default function Chat(props: { apiKeyApp: string }) {
             w={{ base: '160px', md: '210px' }}
             h="54px"
             _hover={{
-              boxShadow:
-                '0px 21px 27px -10px rgba(96, 60, 255, 0.48) !important',
-              bg:
-                'linear-gradient(15.46deg, #4A25E1 26.3%, #7B5AFF 86.4%) !important',
+              boxShadow: '0px 21px 27px -10px rgba(96, 60, 255, 0.48) !important',
+              bg: 'linear-gradient(15.46deg, #4A25E1 26.3%, #7B5AFF 86.4%) !important',
               _disabled: {
                 bg: 'linear-gradient(15.46deg, #4A25E1 26.3%, #7B5AFF 86.4%)',
               },
             }}
-            onClick={handleTranslate}
-            isLoading={loading ? true : false}
+            onClick={handleSendMessage}
           >
             Submit
           </Button>
         </Flex>
 
-        <Flex
-          justify="center"
-          mt="20px"
-          direction={{ base: 'column', md: 'row' }}
-          alignItems="center"
-        >
+        <Flex justify="center" mt="20px" direction={{ base: 'column', md: 'row' }} alignItems="center">
           <Text fontSize="xs" textAlign="center" color={gray}>
-          BranWave AI ChatBot puede producir información inexacta
-            sobre personas, lugares o hechos.
+            Cometa AI ChatBot puede producir información inexacta sobre personas, lugares o hechos.
           </Text>
-          {/* <Link href="https://help.openai.com/en/articles/6825453-chatgpt-release-notes">
-            <Text
-              fontSize="xs"
-              color={textColor}
-              fontWeight="500"
-              textDecoration="underline"
-            >
-              ChatGPT May 12 Version
-            </Text>
-          </Link> */}
         </Flex>
       </Flex>
     </Flex>
   );
 }
 
-
+export default App;

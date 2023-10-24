@@ -144,7 +144,7 @@ function SignUp() {
             mb="10px"
             fontWeight={'700'}
           >
-            Sign In
+            Cometa AI ChatBot
           </Text>
           <Text
             mb="36px"
@@ -153,7 +153,7 @@ function SignUp() {
             fontWeight="500"
             fontSize="sm"
           >
-            Enter your email and password to sign in!
+            Introduzca su correo electrónico y contraseña para iniciar sesión!
           </Text>
         </Box>
         <Flex
@@ -180,7 +180,7 @@ function SignUp() {
             onClick={() => setIsModalOpen(true)}
           >
             <Icon as={FcBusinessman} w="20px" h="20px" me="10px" />
-            Sign in as a guest
+            Iniciar sesión como invitado
           </Button>
 
           {/* Renderiza el modal si isModalOpen es verdadero */}
@@ -195,7 +195,7 @@ function SignUp() {
               fontSize="sm"
               mx="14px"
             >
-              or
+              o
             </Text>
             <HSeparator />
           </Flex>
@@ -223,7 +223,7 @@ function SignUp() {
               variant="auth"
               fontSize="sm"
               type="email"
-              placeholder="Enter your email address"
+              placeholder="Introduzca su email"
               mb="24px"
               size="lg"
               // borderColor={borderColor}
@@ -243,7 +243,7 @@ function SignUp() {
               color={textColor}
               display="flex"
             >
-              Password<Text color={brandStars}>*</Text>
+              Contraseña<Text color={brandStars}>*</Text>
             </FormLabel>
             <InputGroup size="md">
               <Input
@@ -251,7 +251,7 @@ function SignUp() {
                 variant="auth"
                 id="password"
                 fontSize="sm"
-                placeholder="Enter your password"
+                placeholder="Introduzca su contraseña"
                 mb="24px"
                 size="lg"
                 borderColor={passwordError ? "red" : borderColor}
@@ -285,10 +285,10 @@ function SignUp() {
                   fontWeight="600"
                   fontSize="sm"
                 >
-                  Keep me logged in
+                  Mantenerme conectado
                 </FormLabel>
               </FormControl>
-              <NavLink href="#">
+              {/* <NavLink href="#">
                 <Text
                   color={textColorBrand}
                   w="124px"
@@ -297,7 +297,7 @@ function SignUp() {
                 >
                   Forgot password?
                 </Text>
-              </NavLink>
+              </NavLink> */}
             </Flex>
             {/* CONFIRM */}
             <Button
@@ -318,7 +318,7 @@ function SignUp() {
           </FormControl>
           <Flex justifyContent="center" alignItems="start" maxW="100%" mt="0px">
             <Text color={textColorDetails} fontWeight="500" fontSize="sm">
-              Not registered yet?
+            ¿Aún no se ha registrado?
             </Text>
             <Link href="/others/register" py="0px" lineHeight={'120%'}>
               <Text
@@ -328,7 +328,7 @@ function SignUp() {
                 ms="5px"
                 fontWeight="600"
               >
-                Create an Account
+                Crear una Cuenta
               </Text>
             </Link>
           </Flex>

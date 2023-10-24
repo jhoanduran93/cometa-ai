@@ -81,7 +81,7 @@ function SidebarContent(props: SidebarContent) {
         <Text color={textColor} fontSize="xs" fontWeight="600" me="10px">
           Adela Parkson
         </Text>
-        <Menu>
+        {/* <Menu>
           <MenuButton
             as={Button}
             variant="transparent"
@@ -119,7 +119,7 @@ function SidebarContent(props: SidebarContent) {
             border="0px"
             boxShadow={shadow}
             bg={bgColor}
-          >
+           >
             <Box mb="30px">
               <NavLink href="/settings">
                 <Flex align="center">
@@ -154,7 +154,7 @@ function SidebarContent(props: SidebarContent) {
             </Box>
 
           </MenuList>
-        </Menu>
+        </Menu> */}
         <Button
           variant="transparent"
           border="1px solid"
