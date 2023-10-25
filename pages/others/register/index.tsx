@@ -99,7 +99,7 @@ const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => 
         console.error('Error en el inicio de sesión:', error.response?.data);
         setLoginError("Correo o contraseña incorrectos");
       } else {
-        console.error('Error al iniciar sesión:', error.message);
+        console.error('Error al iniciar sesión:');
         setLoginError("Error al iniciar sesión");
       }
     } finally {
