@@ -82,7 +82,8 @@ function App() {
   }, []);
 
   const handleSendMessage = () => {
-    if (inputMessage.trim() === '') return;
+    if (inputMessage.trim() === '') return
+    ;
 
     const question = `¿${inputMessage}?`;
 
@@ -239,7 +240,7 @@ function App() {
             color={inputColor}
             _placeholder={placeholderColor}
             placeholder="Escribe tu mensaje aquí..."
-            // value={inputMessage}
+            value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
           />
           <Button
