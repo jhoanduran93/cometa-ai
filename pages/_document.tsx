@@ -7,7 +7,7 @@ export default function Document() {
       <Head>
         <title>Cometa AI ChatBot</title>
         {/* <meta name="description" content="" /> */}
-        <link rel="icon" type="image/x-icon" href="/brain.ico" />
+        <link rel="icon" type="image/x-icon" href="/cometa.ico" />
       </Head>
       <body suppressHydrationWarning={true}>
         <Main />

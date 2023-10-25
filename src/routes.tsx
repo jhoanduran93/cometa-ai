@@ -25,7 +25,7 @@ const routes: IRoute[] = [
     collapse: false,
   },
   {
-    name: 'Ver Tips',
+    name: 'Tips!',
     path: '/article',
     icon: (
       <Icon as={MdLayers} width="20px" height="20px" color="inherit" />

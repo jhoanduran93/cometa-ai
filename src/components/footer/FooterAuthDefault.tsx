@@ -37,7 +37,7 @@ export default function Footer() {
         {' '}
         &copy; {new Date().getFullYear()}
         <Text as="span" fontWeight="500" ms="4px">
-          BrainWave AI ChatBot. All Rights Reserved.
+          Cometa AI ChatBot. All Rights Reserved.
         </Text>
       </Text>
       {/* <List display="flex">

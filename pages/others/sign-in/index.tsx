@@ -16,13 +16,12 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import illustration from '/public/img/auth/auth2.jpg';
+import illustration from '/public/img/auth/spacial.jpg';
 import { HSeparator } from '@/components/separator/Separator';
 import DefaultAuth from '@/components/auth';
 import { FcBusinessman } from 'react-icons/fc';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 import { RiEyeCloseLine } from 'react-icons/ri';
-import NavLink from '@/components/link/NavLink';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
@@ -93,7 +92,7 @@ function SignUp() {
     } finally {
       if (redirectToChat) {
         console.log("Antes de redirección");
-        router.push('/chat');
+        router.push('/article');
       }
     }
   };
@@ -132,7 +131,7 @@ function SignUp() {
     } finally {
       if (redirectToChat) {
         console.log("Antes de redirección");
-        router.push('/chat');
+        router.push('/article');
       }
     }
   };
@@ -170,7 +169,7 @@ function SignUp() {
         mx={{ base: 'auto', lg: '0px' }}
         me="auto"
         h="100%"
-        justifyContent="center-left"
+        justifyContent="right"
         mb={{ base: '30px', md: '60px' }}
         px={{ base: '25px', md: '0px' }}
         mt={{ base: '40px', md: '12vh' }}

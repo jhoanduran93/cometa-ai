@@ -118,7 +118,7 @@ export default function HeaderLinks(props: {
                 _active={activeButton}
                 _focus={activeButton}
               >
-                view Tips! <Icon as={FcIdea} w="20px" h="20px" me="10px" />
+                Ver Tips! <Icon as={FcIdea} w="20px" h="20px" me="10px" />
               </Button>
             </Link>
 

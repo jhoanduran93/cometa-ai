@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MdAutoAwesome, MdEdit, MdPerson } from 'react-icons/md';
-import Bg from '../../public/img/chat/bg-image.png';
+// import Bg from '../../public/img/chat/cometa.png';
 import MessageBoxChat from '@/components/MessageBoxChat';
 import { ChatBody } from '@/types/types';
 import {
@@ -25,7 +25,6 @@ function App() {
   const [inputMessage, setInputMessage] = useState('');
   const [websocket, setWebsocket] = useState<WebSocket | null>(null);
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
-  const [outputCode, setOutputCode] = useState<string>('');
 
   const borderColor = useColorModeValue('gray.200', 'whiteAlpha.200');
   const inputColor = useColorModeValue('navy.700', 'white');
@@ -46,6 +45,28 @@ function App() {
     { color: 'gray.500' },
     { color: 'whiteAlpha.600' },
   );
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [isAccordionOpen, setIsAccordionOpen] = useState(true);
+
+  const handleItemClick = (item: string) => {
+    setSelectedItem(item);
+    setIsAccordionOpen(false); // Cierra el Accordion al seleccionar un ítem
+  };
+
+  const items = [
+   "Libros",
+   "Música",
+   "Política",
+   "Historia",
+   "Deportes",
+   "Educación",
+   "Tecnología",
+   "Alimentación",
+   "Cultura y arte",
+   "Salud y bienestar",
+   "Películas y series",
+   "Hobbies e intereses",
+  ];
 
   useEffect(() => {
     const ws = new WebSocket('wss://cometa-c40d5067bfcf.herokuapp.com/chatbot');
@@ -106,14 +127,15 @@ function App() {
       direction="column"
       position="relative"
     >
-      <Img
-        // src={Bg.src}
+      {/* <Img
+        src={Bg.src}
         position={'absolute'}
         w="350px"
+        zIndex={-1}
         left="50%"
         top="50%"
         transform={'translate(-50%, -50%)'}
-      />
+      /> */}
       <Flex
         direction="column"
         mx="auto"
@@ -133,42 +155,44 @@ function App() {
             mb="20px"
             borderRadius="60px"
           />
-          {/* <Accordion color={gray} allowToggle w="100%" my="0px" mx="auto">
-            <AccordionItem border="none">
-              <AccordionButton
-                borderBottom="0px solid"
-                maxW="max-content"
-                mx="auto"
-                _hover={{ border: '0px solid', bg: 'none' }}
-                _focus={{ border: '0px solid', bg: 'none' }}
-              >
-                <Box flex="1" textAlign="left">
-                  <Text color={gray} fontWeight="500" fontSize="sm">
-                    Encuentra temas relacionados con
-                  </Text>
-                </Box>
-                <AccordionIcon color={gray} />
-              </AccordionButton>
-              <AccordionPanel mx="auto" w="max-content" p="0px 0px 10px 0px">
-                <Text
-                  color={gray}
-                  fontWeight="500"
-                  fontSize="sm"
-                  textAlign={'center'}
-                >
-                  Recetas
-                </Text>
-                <Text
-                  color={gray}
-                  fontWeight="500"
-                  fontSize="sm"
-                  textAlign={'center'}
-                >
-                  Historia
-                </Text>
-              </AccordionPanel>
-            </AccordionItem>
-          </Accordion> */}
+      <Accordion allowToggle w="100%" my="0px" mx="auto">
+      <AccordionItem border="none">
+        <AccordionButton
+          borderBottom="0px solid"
+          maxW="max-content"
+          mx="auto"
+          _hover={{ border: '0px solid', bg: 'none' }}
+          _focus={{ border: '0px solid', bg: 'none' }}
+        >
+          <Box flex="1" textAlign="left">
+            <Text color="gray" fontWeight="500" fontSize="sm">
+              Seleccione un tema de conversación
+            </Text>
+          </Box>
+          <AccordionIcon color="gray" />
+        </AccordionButton>
+        <AccordionPanel mx="auto" w="max-content" p="0px 0px 10px 0px">
+
+            
+            {items.map((item, index) => (
+            <div
+              key={index}
+              style={{
+                cursor: 'pointer',
+                color: selectedItem === item ? 'blue' : 'gray',
+                fontWeight: selectedItem === item ? 'bold' : 'normal',
+                textAlign: 'center',
+                fontSize: '14px',
+              }}
+              onClick={() => setSelectedItem(item)}
+            >
+              {item}
+            </div>
+          ))}
+            
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
         </Flex>
 
         <Flex
@@ -261,7 +285,7 @@ function App() {
             }}
             onClick={handleSendMessage}
           >
-            Submit
+            Enviar
           </Button>
         </Flex>
 
