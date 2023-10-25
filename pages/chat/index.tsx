@@ -263,7 +263,7 @@ function App() {
             _focus={{ borderColor: 'none' }}
             color={inputColor}
             _placeholder={placeholderColor}
-            placeholder="Escribe tu mensaje aquí..."
+            placeholder="Escribe tu pregunta aquí..."
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
           />

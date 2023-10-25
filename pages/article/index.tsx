@@ -30,9 +30,9 @@ export default function Home() {
     "¿Quién?: Para identificar personas o entidades. Ejemplo: ¿Quién es el CEO?",
     "¿Cuánto?: Para cantidades. Ejemplo: ¿Cuánto cuesta el envío?",
     "¿Cuál?: Para hacer elecciones entre opciones. Ejemplo: ¿Cuál plan es el mejor?",
-    "¿Por qué?: Para motivaciones y razones. Ejemplo: ¿Por qué recomiendan este producto?",
-    "¿Para quién?: Para público objetivo. Ejemplo: ¿Para quién es la oferta?",
-    "¿Con quién?: Para identificar con quién contactar. Ejemplo: ¿Con quién hablar sobre soporte?",
+    "¿Por?: Para motivaciones y razones. Ejemplo: ¿Por qué recomiendan este producto?",
+    "¿Para?: Para público objetivo. Ejemplo: ¿Para quién es la oferta?",
+    "¿Con?: Para identificar con quién contactar. Ejemplo: ¿Con quién hablar sobre soporte?",
 
 
   ];
