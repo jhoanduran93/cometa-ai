@@ -170,7 +170,7 @@ function SignUp() {
               variant="auth"
               id="name"
               fontSize="sm"
-              type={show ? 'text' : 'name'}
+              type={show ? 'text' : 'text'}
               placeholder="Enter your name"
               mb="24px"
               size="lg"
