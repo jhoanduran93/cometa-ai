@@ -76,7 +76,7 @@ function SignUp() {
       
     }
   };
-
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await createUser();
