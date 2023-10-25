@@ -45,16 +45,16 @@ function SignUp() {
 
   const [loginError, setLoginError] = useState("");
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value);
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
-  const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value);
+  const handleNameChange = (e) => setName(e.target.value);
+  const handleEmailChange = (e) => setEmail(e.target.value);
+  const handlePasswordChange = (e) => setPassword(e.target.value);
+  const handleConfirmPasswordChange = (e) => setConfirmPassword(e.target.value);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen] = useState(false);
 
   const handleClick = () => setShow(!show);
   const router = useRouter();
-  let redirectTologin = false;
+  let redirectToLogin = false;
 
   const createUser = async () => {
     try {
@@ -66,51 +66,41 @@ function SignUp() {
 
       if (response.status === 201) {
         console.log('Usuario creado exitosamente:', response.data);
-        // Puedes redirigir al usuario a la página de inicio de sesión o realizar alguna otra acción
-       
       } else {
         console.error('Error al crear usuario:', response.data);
       }
     } catch (error) {
       console.error('Error al crear usuario:', (error as Error).message);
-    }finally {
-      
-        console.log("Antes de redirección");
-        router.push('/others/sign-in');
-      
+    } finally {
+      console.log("Antes de redirección");
+      router.push('/others/sign-in');
     }
   };
 
   let redirectToChat = false;
-  const loginUserinvitado = async () => {
+  const loginUserInvitado = async () => {
     try {
       console.log('Antes de la solicitud');
       const response = await axios.post('https://cometa-c40d5067bfcf.herokuapp.com/login', {
         email: 'invitado@gmail.ve',
         password: '123',
       });
-  
+
       console.log('Después de la solicitud, antes de verificar el código de estado');
-      // Verificar el código de estado de la respuesta
       if (response.status === 200) {
         redirectToChat = true;
-        // El inicio de sesión fue exitoso
         console.log('Inicio de sesión exitoso:', response.data);
       } else {
-        // El servidor respondió, pero no fue un inicio de sesión exitoso
         console.error('Error en el inicio de sesión:', response.data);
-        setLoginError("Correo o contraseña incorrectos"); // Establece el mensaje de error
+        setLoginError("Correo o contraseña incorrectos");
       }
-    } catch (error: any) {
-      // Manejar errores de la API
+    } catch (error) {
       if (axios.isAxiosError(error)) {
-        // El servidor respondió con un código de estado diferente de 2xx
         console.error('Error en el inicio de sesión:', error.response?.data);
-        setLoginError("Correo o contraseña incorrectos"); // Establece el mensaje de error
+        setLoginError("Correo o contraseña incorrectos");
       } else {
-        // Ocurrió un error antes de recibir una respuesta del servidor
         console.error('Error al iniciar sesión:', error.message);
-        setLoginError("Error al iniciar sesión"); // Establece el mensaje de error
+        setLoginError("Error al iniciar sesión");
       }
     } finally {
       if (redirectToChat) {
@@ -120,11 +110,11 @@ function SignUp() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     await createUser();
   };
-  
+
   return (
     <DefaultAuth illustrationBackground={illustration?.src}>
       <Flex
@@ -179,7 +169,7 @@ function SignUp() {
             fontSize="sm"
             w={{ base: '100%' }}
             h="54px"
-            onClick={loginUserinvitado}  // Usar la función loginUserinvitado
+            onClick={loginUserInvitado}
           >
             <Icon as={FcBusinessman} w="20px" h="20px" me="10px" />
             Iniciar sesión como invitado
@@ -194,11 +184,9 @@ function SignUp() {
             >
               o
             </Text>
-            {/* Renderiza el modal si isModalOpen es verdadero
-          {isModalOpen && <APIModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />} */}
             <HSeparator />
           </Flex>
-          <FormControl as="form" onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
             <FormLabel
               cursor="pointer"
               htmlFor="name"
@@ -346,7 +334,7 @@ function SignUp() {
             >
               Cree su cuenta
             </Button>
-          </FormControl>
+          </form>
           <Flex justifyContent="center" alignItems="start" maxW="100%" mt="0px">
             <Text color={textColorDetails} fontWeight="500" fontSize="sm">
               Ya tiene una cuenta?
