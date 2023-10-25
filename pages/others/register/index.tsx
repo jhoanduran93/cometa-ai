@@ -23,6 +23,7 @@ import { FcBusinessman } from 'react-icons/fc';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 import { RiEyeCloseLine } from 'react-icons/ri';
 import { useRouter } from 'next/router';
+import { FormEvent } from 'react';
 import APIModal from '@/components/apiModal';
 
 function SignUp() {
@@ -110,7 +111,7 @@ const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => 
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     await createUser();
   };
