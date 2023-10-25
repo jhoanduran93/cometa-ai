@@ -25,14 +25,14 @@ export default function Home() {
     const items = [
     "¿Qué?: Para detalles y descripciones. Ejemplo: ¿Qué servicios ofrecen?", 
     "¿Cómo?: Para instrucciones y procedimientos. Ejemplo: ¿Cómo configurar mi cuenta?",
-    "¿Cuándo?: Para horarios y fechas. Ejemplo: '¿Cuándo es la reunión?'", 
+    "¿Cuándo?: Para horarios y fechas. Ejemplo: ¿Cuándo es la reunión?", 
     "¿Dónde?: Para ubicaciones. Ejemplo: ¿Dónde está la tienda más cercana?",
     "¿Quién?: Para identificar personas o entidades. Ejemplo: ¿Quién es el CEO?",
     "¿Cuánto?: Para cantidades. Ejemplo: ¿Cuánto cuesta el envío?",
     "¿Cuál?: Para hacer elecciones entre opciones. Ejemplo: ¿Cuál plan es el mejor?",
-    "¿Por_qué?: Para motivaciones y razones. Ejemplo: ¿Por qué recomiendan este producto?",
-    "¿Para_quién?: Para público objetivo. Ejemplo: ¿Para quién es la oferta?",
-    "¿Con_quién?: Para identificar con quién contactar. Ejemplo: ¿Con quién hablar sobre soporte?",
+    "¿Por qué?: Para motivaciones y razones. Ejemplo: ¿Por qué recomiendan este producto?",
+    "¿Para quién?: Para público objetivo. Ejemplo: ¿Para quién es la oferta?",
+    "¿Con quién?: Para identificar con quién contactar. Ejemplo: ¿Con quién hablar sobre soporte?",
 
 
   ];
