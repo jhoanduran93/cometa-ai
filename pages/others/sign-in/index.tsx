@@ -97,6 +97,45 @@ function SignUp() {
       }
     }
   };
+
+  const loginUserinvitado = async () => {
+    try {
+      console.log('Antes de la solicitud');
+      const response = await axios.post('https://cometa-c40d5067bfcf.herokuapp.com/login', {
+        email: 'invitado@gmail.ve',
+        password: '123',
+        keepLoggedIn: keepLoggedIn,
+      });
+  
+      console.log('Después de la solicitud, antes de verificar el código de estado');
+      // Verificar el código de estado de la respuesta
+      if (response.status === 200) {
+        redirectToChat = true;
+        // El inicio de sesión fue exitoso
+        console.log('Inicio de sesión exitoso:', response.data);
+      } else {
+        // El servidor respondió, pero no fue un inicio de sesión exitoso
+        console.error('Error en el inicio de sesión:', response.data);
+        setLoginError("Correo o contraseña incorrectos"); // Establece el mensaje de error
+      }
+    } catch (error: any) {
+      // Manejar errores de la API
+      if (axios.isAxiosError(error)) {
+        // El servidor respondió con un código de estado diferente de 2xx
+        console.error('Error en el inicio de sesión:', error.response?.data);
+        setLoginError("Correo o contraseña incorrectos"); // Establece el mensaje de error
+      } else {
+        // Ocurrió un error antes de recibir una respuesta del servidor
+        console.error('Error al iniciar sesión:', error.message);
+        setLoginError("Error al iniciar sesión"); // Establece el mensaje de error
+      }
+    } finally {
+      if (redirectToChat) {
+        console.log("Antes de redirección");
+        router.push('/chat');
+      }
+    }
+  };
   
   
   const handleLogin = async () => {
@@ -177,7 +216,7 @@ function SignUp() {
             fontSize="md"
             w={{ base: '100%' }}
             h="54px"
-            onClick={() => setIsModalOpen(true)}
+            onClick={loginUserinvitado}  // Usar la función loginUserinvitado
           >
             <Icon as={FcBusinessman} w="20px" h="20px" me="10px" />
             Iniciar sesión como invitado
