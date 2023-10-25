@@ -9,8 +9,8 @@ export default function Home() {
 
   useEffect(() => {
     
-  //router.push('/others/sign-in');
-  router.push('/chat')
+  router.push('/others/sign-in');
+  //router.push('/chat')
   }, []);
   return (
     <Flex
