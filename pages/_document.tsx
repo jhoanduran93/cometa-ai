@@ -1,5 +1,11 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 import Script from 'next/script';
+import Hotjar from '@hotjar/browser';
+
+const siteId = 3710371;
+const hotjarVersion = 6;
+
+Hotjar.init(siteId, hotjarVersion);
 
 export default function Document() {
   return (

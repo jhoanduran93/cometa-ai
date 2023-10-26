@@ -129,12 +129,11 @@ function SignUp() {
         setLoginError("Error al iniciar sesión"); // Establece el mensaje de error
       }
     } finally {
-      
+      if (redirectToChat) {
         console.log("Antes de redirección");
         router.push('/article');
-      
+      }
     }
-    
   };
   
   

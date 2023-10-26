@@ -34,7 +34,7 @@ export default function DefaultAuthLayout(props: DefaultAuthLayoutProps) {
         direction="column"
       >
         <NavLink
-          href="/chat" //o all-templates
+          href="/sign-in" //o all-templates
           styles={{
             width: 'fit-content',
             marginTop: '40px',
