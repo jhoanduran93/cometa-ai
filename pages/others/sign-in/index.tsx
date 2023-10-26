@@ -103,7 +103,7 @@ function SignUp() {
       const response = await axios.post('https://cometa-c40d5067bfcf.herokuapp.com/login', {
         email: 'invitado@gmail.ve',
         password: '123',
-        //keepLoggedIn: keepLoggedIn,
+        keepLoggedIn: keepLoggedIn,
       });
   
       console.log('Después de la solicitud, antes de verificar el código de estado');
@@ -129,11 +129,12 @@ function SignUp() {
         setLoginError("Error al iniciar sesión"); // Establece el mensaje de error
       }
     } finally {
-      if (redirectToChat) {
+      
         console.log("Antes de redirección");
         router.push('/article');
-      }
+      
     }
+    
   };
   
   
