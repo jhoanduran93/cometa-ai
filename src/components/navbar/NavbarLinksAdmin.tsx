@@ -22,6 +22,8 @@ import { MdInfoOutline } from 'react-icons/md';
 import { FcIdea } from 'react-icons/fc';
 import NavLink from '../link/NavLink';
 import routes from '@/routes';
+import { FiLogOut } from 'react-icons/fi';
+
 
 export default function HeaderLinks(props: {
   secondary: boolean;
@@ -60,7 +62,7 @@ export default function HeaderLinks(props: {
       borderRadius="30px"
       boxShadow={shadow}
     >
-      <SearchBar
+      {/* <SearchBar
         mb={() => {
           if (secondary) {
             return { base: '10px', md: 'unset' };
@@ -69,7 +71,7 @@ export default function HeaderLinks(props: {
         }}
         me="10px"
         borderRadius="30px"
-      />
+      /> */}
       <SidebarResponsive routes={routes} />
 
       <Menu>
@@ -149,19 +151,20 @@ export default function HeaderLinks(props: {
        
       <Menu>
         <MenuButton p="0px" style={{ position: 'relative' }}>
-          <Box
-            _hover={{ cursor: 'pointer' }}
-            color="white"
-            bg="#11047A"
-            w="40px"
-            h="40px"
-            borderRadius={'50%'}
-          />
-          <Center top={0} left={0} position={'absolute'} w={'100%'} h={'100%'}>
-            <Text fontSize={'xs'} fontWeight="bold" color={'white'}>
-              AP
-            </Text>
-          </Center>
+        <Button
+          variant="transparent"
+          border="1px solid"
+          borderColor={borderColor}
+          borderRadius="full"
+          w="34px"
+          h="34px"
+          px="0px"
+          minW="34px"
+          justifyContent={'center'}
+          alignItems="center"
+        >
+          <Icon as={FiLogOut} width="16px" height="16px" color="inherit" />
+        </Button>
         </MenuButton>
         <MenuList
           boxShadow={shadow}
@@ -187,7 +190,7 @@ export default function HeaderLinks(props: {
             </Text>
           </Flex>
           <Flex flexDirection="column" p="10px">
-            <NavLink href="/settings">
+            {/* <NavLink href="/settings">
               <MenuItem
                 _hover={{ bg: 'none' }}
                 _focus={{ bg: 'none' }}
@@ -199,8 +202,8 @@ export default function HeaderLinks(props: {
                   Profile Settings
                 </Text>
               </MenuItem>
-            </NavLink>
-            <MenuItem
+            </NavLink> */}
+            {/* <MenuItem
               _hover={{ bg: 'none' }}
               _focus={{ bg: 'none' }}
               color={textColor}
@@ -210,7 +213,8 @@ export default function HeaderLinks(props: {
               <Text fontWeight="500" fontSize="sm">
                 Newsletter Settings
               </Text>
-            </MenuItem>
+            </MenuItem> */}
+            <NavLink href="/"> {/* aqui agregar el onclick o onchage para salir */}
             <MenuItem
               _hover={{ bg: 'none' }}
               _focus={{ bg: 'none' }}
@@ -219,9 +223,10 @@ export default function HeaderLinks(props: {
               px="14px"
             >
               <Text fontWeight="500" fontSize="sm">
-                Log out
+                Cerrar Sesión
               </Text>
             </MenuItem>
+            </NavLink>
           </Flex>
         </MenuList>
       </Menu>

@@ -16,16 +16,12 @@ import NavLink from '@/components/link/NavLink';
 //   Custom components
 import avatar4 from '/public/img/avatars/avatar4.png';
 import { NextAvatar } from '@/components/image/Avatar';
-// import APIModal from '@/components/apiModal';
 import Brand from '@/components/sidebar/components/Brand';
 import Links from '@/components/sidebar/components/Links';
-import { RoundedChart } from '@/components/icons/Icons';
 import { PropsWithChildren } from 'react';
 import { IRoute } from '@/types/navigation';
-import { IoMdPerson } from 'react-icons/io';
 import { FiLogOut } from 'react-icons/fi';
-import { LuHistory } from 'react-icons/lu';
-import { MdOutlineManageAccounts, MdOutlineSettings } from 'react-icons/md';
+
 
 // FUNCTIONS
 
