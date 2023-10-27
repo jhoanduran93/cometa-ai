@@ -52,7 +52,7 @@ function App({ Component, pageProps }: AppProps<{}>) {
                 <Navbar
                   setApiKey={setApiKey}
                   onOpen={onOpen}
-                  logoText={'Horizon UI Dashboard PRO'}
+                  logoText={'Cometa AI'}
                   brandText={getActiveRoute(routes, pathname)}
                   secondary={getActiveNavbar(routes, pathname)}
                 />
