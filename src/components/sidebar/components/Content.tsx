@@ -75,7 +75,7 @@ function SidebarContent(props: SidebarContent) {
       >
         <NextAvatar h="34px" w="34px" src={avatar4} me="10px" />
         <Text color={textColor} fontSize="xs" fontWeight="600" me="10px">
-          Adela Parkson
+          Invitado
         </Text>
         {/* <Menu>
           <MenuButton
@@ -151,20 +151,7 @@ function SidebarContent(props: SidebarContent) {
 
           </MenuList>
         </Menu> */}
-        <Button
-          variant="transparent"
-          border="1px solid"
-          borderColor={borderColor}
-          borderRadius="full"
-          w="34px"
-          h="34px"
-          px="0px"
-          minW="34px"
-          justifyContent={'center'}
-          alignItems="center"
-        >
-          <Icon as={FiLogOut} width="16px" height="16px" color="inherit" />
-        </Button>
+        
       </Flex>
     </Flex>
   );
